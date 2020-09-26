@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ConnectedIn</title>
+</head>
+<body>
+	
+	<h1>Perfil: {{perfil.nome}}</h1>
+
+	<ul>
+		<li>Email: {{perfil.email}}</li>
+		<li>Telefone: {{perfil.telefone}}</li>
+		<li>Nome Empresa: {{perfil.nome_empresa}}</li>
+		<li>Sobre: {{perfil.sobre}}</li>
+	</ul>
+
+	<a href="{% url 'convidar' perfil.id %}">Convidar</a>
+
+</body>
+</html>
