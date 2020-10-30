@@ -1,20 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>ConnectedIn</title>
-</head>
-<body>
-	
-	<h1>Perfil: {{perfil.nome}}</h1>
+{% extends "base.html" %}
+{% block body %}
 
-	<ul>
-		<li>Email: {{perfil.email}}</li>
-		<li>Telefone: {{perfil.telefone}}</li>
-		<li>Nome Empresa: {{perfil.nome_empresa}}</li>
-		<li>Sobre: {{perfil.sobre}}</li>
-	</ul>
+	<div class="row">
+		<div class="col-lg-12">
+			<h2>{{perfil.nome}}</h2>
+			<ul style="list-style: georgian outside url('/non-existent.svg');">
+				<li>{{perfil.nome_empresa}}</li>
+				<li><a href="mailto:{{perfil.email}}">{{perfil.email}}</a></li>
+				<li>{{perfil.telefone}}</li>
+				<li>Sobre: {{perfil.sobre}}</li>
+			</ul>
+			
+			{% if eh_contato %}
+				<div class="well well-sm">Vocês estão conectados!</div>
+			{% else %}
+				<a href="{% url 'convidar' perfil.id %}">Convidar</a>
+			{% endif %}
 
-	<a href="{% url 'convidar' perfil.id %}">Convidar</a>
+		</div>
+	</div>
 
+{% endblock %}
 </body>
 </html>

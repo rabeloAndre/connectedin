@@ -6,6 +6,7 @@ class Perfil(models.Model):
 	telefone = models.CharField(max_length=15, null=False)
 	nome_empresa = models.CharField(max_length=80, null=False)
 	sobre = models.CharField(max_length=255, null=False)
+	contatos = models.ManyToManyField('self')
 
 	def convidar(self, perfil_convidado):
 		convite = Convite(solicitados=self,
@@ -14,8 +15,13 @@ class Perfil(models.Model):
 
 class Convite(models.Model):
 	solicitados = models.ForeignKey(Perfil,
-		related_name = 'solicitados',
+		related_name = 'convites_feitos',
 		on_delete = models.CASCADE)
 	recebidos = models.ForeignKey(Perfil, 
-		related_name = 'recebidos',
+		related_name = 'convites_recebidos',
 		on_delete = models.CASCADE)
+
+	def aceitar(self):
+		self.recebidos.contatos.add(self.solicitados)
+		self.solicitados.contatos.add(self.recebidos)
+		self.delete()

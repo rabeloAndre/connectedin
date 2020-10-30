@@ -24,4 +24,6 @@ urlpatterns = [
     				views.exibir, name='exibir'),
     path('perfil/<int:perfil_id>/convidar',
     				views.convidar, name='convidar'),
+    path('perfil/<int:convite_id>/aceitar',
+                    views.aceitar, name='aceitar'),
 ]
