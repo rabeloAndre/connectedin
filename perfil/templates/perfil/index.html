@@ -1,31 +1,39 @@
-{% extends "base.html" %}
+{% extends "perfil/base.html" %}
 {% block body %}
 	
 	<div class="col-pg-12">
 
 		<div class="panel panel-default">
+
 			<div class="panel-heading">
 				<h1>Todos os perfis</h1>
 			</div>
 			
 			{% if perfil %}
 				<ul>
+
 					{% for profile in perfil %}
+						
 						{% if profile.nome != perfil_logado.nome %}
 							<li>
 								<a href="{% url 'exibir' profile.id %}">{{profile.nome}}
 								</a> / {{profile.email}}
 							</li>
 						{% endif %}
+
 					{% endfor %}
+
 				</ul>
 			{% else %}
+
 				<p>Nenhum perfil encontrado</p>
+
 			{% endif %}
 
 		<br>
 
 			<div class="container">
+
 				<span>
 					Página {{perfil.number}} de {{perfil.paginator.num_pages}}
 				</span>
@@ -37,12 +45,16 @@
 				{% if perfil.has_previous %}
 					<a href="?page={{perfil.previous_page_number}}">anterior</a>
 				{% endif %}
+
 			</div>
+
 		</div>
+
 	</div>
 
 	<div class="panel panel-default">
 		{% with total_de_contatos=perfil_logado.contatos.count %}
+			
 			{% if total_de_contatos %}
 				<div class="panel-heading">
 					<strong>Você tem {{total_de_contatos}}
@@ -50,22 +62,22 @@
 				</div>
 
 				{% for contato in perfil_logado.contatos.all %}
-				<ul>
-					<li>
-						<a href="{% url 'exibir' contato.id %}">{{contato.nome}}
-						</a> / {{contato.email}}
-					</li>
+				<ul class="dropdown-item">
+					<a href="{% url 'exibir' contato.id %}">{{contato.nome}}
+					</a> / {{contato.email}}
 				</ul>
 				{% endfor %}
 
 			{% else %}
+
 				<div class="panel-body">
 					<p>Você não possui contatos no momento :(</p>
 				</div>
+
 			{% endif %}
+
 		{% endwith %}
+
 	</div>
 
 {% endblock %}
-</body>
-</html>
