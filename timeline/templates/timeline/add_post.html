@@ -1,0 +1,20 @@
+{% extends "perfil/base.html" %}
+
+{% block body %}
+
+<form class="form-signin" enctype="multipart/form-data" action="{% url 'add_post' %}" method="POST">
+	{% csrf_token %}
+	<h3 class="form-signin-heading">New Post:</h3>
+
+	<br>
+
+	<div class="form-group">
+	    <label for="texto">Escreva algo: </label>
+	    <textarea class="form-control" id="id_texto" placeholder="Digite aqui" rows="8" cols="40" name="texto" required></textarea>
+	</div>
+
+	<button class="btn btn-primary" type="submit" value="Add">Postar</button>
+
+</form>
+
+{% endblock %}

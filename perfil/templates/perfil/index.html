@@ -1,82 +1,133 @@
 {% extends "perfil/base.html" %}
 {% block body %}
 	
-	<div class="col-pg-12">
+	<div class="container">
 
-		<div class="panel panel-default">
+		<div class="card mb-3">
 
-			<div class="panel-heading">
-				<h1>Todos os perfis</h1>
+			<div class="card-header text-center">
+				<h2>Welcome, {{perfil_logado.nome}}</h2>
 			</div>
-			
-			{% if perfil %}
-				<ul>
 
-					{% for profile in perfil %}
+			<ul class="nav nav-tabs justify-content-center nav-fill" id="myTab" role="tablist">
+			  	<li class="nav-item">
+			    	<a class="nav-link" id="timeline-tab" data-toggle="tab" href="#timeline" role="tab" aria-controls="timeline" aria-selected="true">Timeline</a>
+			  	</li>
+			  	<li class="nav-item">
+			    	<a class="nav-link" id="profiles-tab" data-toggle="tab" href="#profiles" role="tab" aria-controls="profiles" aria-selected="false">Profiles</a>
+			  	</li>
+			  	<li class="nav-item">
+			    	<a class="nav-link" id="contacts-tab" data-toggle="tab" href="#contacts" role="tab" aria-controls="contacts" aria-selected="false">Contacts</a>
+			  	</li>
+			</ul>
+
+			<!-- Tab panes -->
+			<div class="tab-content">
+
+			  	<div class="tab-pane" id="timeline" role="tabpanel" aria-labelledby="timeline-tab">
+			  		<br>
+			  		<div class="text-right">
+						<a href="{% url 'add_post' %}">Add publication (+)</a>
+					</div>
+					<br>
+
+					{% if postagem %}
 						
-						{% if profile.nome != perfil_logado.nome %}
-							<li>
-								<a href="{% url 'exibir' profile.id %}">{{profile.nome}}
-								</a> / {{profile.email}}
-							</li>
-						{% endif %}
+						{% for post in postagem %}
+							<div class="card border-dark mb-3">
+								<div class="card-header">{{post.perfil.nome}}</div>
+								<div class="card-body">
+								    <p class="card-text">{{post.texto}}</p>
+								    <!-- <p class="card-text">Reactions</p> -->
+								    <!-- <a href="#" class="card-link">Comment</a> -->
+								    <p class="card-text"><small class="text-muted">Post in {{post.data_hora}}</small></p>
+								</div>
+							</div>
+						{% endfor %}
 
-					{% endfor %}
+						<div class="card-body text-center">
+							{% if postagem.has_previous %}
+							<button>
+								<a class="card-link" href="?page={{postagem.previous_page_number}}">Previous posts</a>
+							</button>
+							{% endif %}
 
-				</ul>
-			{% else %}
+							{% if postagem.has_next %}
+							<button>
+								<a class="card-link" href="?page={{postagem.next_page_number}}">Next posts</a>
+							</button>
+							{% else %}
+								<p class="nav-link">END<a class="nav-link" href="{% url 'index' %}">Back to start</a></p>
+							{% endif %}
+						</div>
 
-				<p>Nenhum perfil encontrado</p>
+					{% else %}
+						<div class="container text-center">
+							<p>No posts to show</a>
+						</div>
+					{% endif %}
 
-			{% endif %}
+			  	</div>
 
-		<br>
+			  	<div class="tab-pane" id="profiles" role="tabpanel" aria-labelledby="profiles-tab">
+			  		{% if perfil %}
+						<ul><h4>All profiles:</h4> 
 
-			<div class="container">
+							{% for profile in perfil %}
+								
+								{% if profile.nome != perfil_logado.nome %}
+									<li>
+										<a href="{% url 'exibir' profile.id %}">{{profile.nome}}
+										</a> / {{profile.email}}
+									</li>
+								{% endif %}
 
-				<span>
-					Página {{perfil.number}} de {{perfil.paginator.num_pages}}
-				</span>
+							{% endfor %}
 
-				{% if perfil.has_next %}
-					<a href="?page={{perfil.next_page_number}}">próximo</a>
-				{% endif %}
+						</ul>
+					{% else %}
+						<p>Nenhum perfil encontrado</p>
+					{% endif %}
 
-				{% if perfil.has_previous %}
-					<a href="?page={{perfil.previous_page_number}}">anterior</a>
-				{% endif %}
+			  	</div>
+
+			  	<div class="tab-pane" id="contacts" role="tabpanel" aria-labelledby="contacts-tab">
+			  		<div class="card-body">
+						{% with total_de_contatos=perfil_logado.contatos.count %}
+							
+							{% if total_de_contatos %}
+								<div class="panel-heading">
+									<strong>Você tem {{total_de_contatos}}
+									contato{{ total_de_contatos|pluralize }}</strong>
+								</div>
+
+								{% for contato in perfil_logado.contatos.all %}
+								<ul class="card-body">
+									<a href="{% url 'exibir' contato.id %}">{{contato.nome}}
+									</a> / {{contato.email}}
+								</ul>
+								{% endfor %}
+
+							{% else %}
+
+								<div class="panel-heading">
+									<strong>Você não possui contatos :(</strong>
+								</div>
+
+							{% endif %}
+
+						{% endwith %}
+
+					</div>
+			  	</div>
 
 			</div>
+
+			<script>
+				$('#myTab li:first-child a').tab('show');
+			</script>
 
 		</div>
-
-	</div>
-
-	<div class="panel panel-default">
-		{% with total_de_contatos=perfil_logado.contatos.count %}
-			
-			{% if total_de_contatos %}
-				<div class="panel-heading">
-					<strong>Você tem {{total_de_contatos}}
-					contato{{ total_de_contatos|pluralize }}</strong>
-				</div>
-
-				{% for contato in perfil_logado.contatos.all %}
-				<ul class="dropdown-item">
-					<a href="{% url 'exibir' contato.id %}">{{contato.nome}}
-					</a> / {{contato.email}}
-				</ul>
-				{% endfor %}
-
-			{% else %}
-
-				<div class="panel-body">
-					<p>Você não possui contatos no momento :(</p>
-				</div>
-
-			{% endif %}
-
-		{% endwith %}
 
 	</div>
 

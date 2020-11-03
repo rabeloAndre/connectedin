@@ -15,25 +15,32 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from perfil import views
+from perfil import views as views_perfil
 from usuario.views import RegistrarUsuarioView
-from django.contrib.auth import views as v
+from django.contrib.auth import views as views_user
+from timeline import views as views_timeline
 
 urlpatterns = [
+    # Perfil.views
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
+    path('', views_perfil.index, name='index'),
     path('perfil/<int:perfil_id>',
-    				views.exibir, name='exibir'),
+    				views_perfil.exibir, name='exibir'),
     path('perfil/<int:perfil_id>/convidar',
-    				views.convidar, name='convidar'),
+    				views_perfil.convidar, name='convidar'),
     path('perfil/<int:convite_id>/aceitar',
-                    views.aceitar, name='aceitar'),
+                    views_perfil.aceitar, name='aceitar'),
     path('perfil/<int:convite_id>/rejeitar',
-                    views.rejeitar, name='rejeitar'),
+                    views_perfil.rejeitar, name='rejeitar'),
+
+    # Usuario.views
     path('registrar/', RegistrarUsuarioView.as_view(),
                     name='registrar'),
-    path('login/', v.LoginView.as_view(template_name='usuario/login.html'),
+    path('login/', views_user.LoginView.as_view(template_name='usuario/login.html'),
                     name='login'),
-    path('logout/', v.LogoutView.as_view(template_name='usuario/login.html'),
-                    name='logout')
+    path('logout/', views_user.LogoutView.as_view(template_name='usuario/login.html'),
+                    name='logout'),
+
+    # Timeline.views
+    path('timeline/add_post', views_timeline.add_post, name='add_post'),
 ]

@@ -3,25 +3,37 @@ from perfil.models import Perfil, Convite
 from django.shortcuts import redirect
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
+from timeline.models import *
+from timeline.forms import *
 
 @login_required
 def index(request):
 	perfil = Perfil.objects.all()
-	paginator = Paginator(perfil,5)
+	perfil_logado = get_perfil_logado(request)
 
+	my_contatos = perfil_logado.contatos.all()
+	all_posts = Postagem.objects.all()
+	postagem = []
+	for post in all_posts:
+		if post.perfil in my_contatos or post.perfil == perfil_logado:
+			postagem.append(post)
+
+	paginator = Paginator(postagem,3)
+	
 	try:
 		page = int(request.GET.get('page','1'))
 	except:
 		page = 1
 
 	try:
-		perfil = paginator.page(page)
+		postagem = paginator.page(page)
 	except:
-		perfil = paginator.page(paginator.num_pages)
+		postagem = paginator.page(paginator.num_pages)
 
 	return render(request, 'perfil/index.html',
 				{'perfil' : perfil,
-				'perfil_logado' : get_perfil_logado(request)})
+				'postagem' : postagem,
+				'perfil_logado' : perfil_logado})
 
 @login_required
 def exibir(request, perfil_id):
